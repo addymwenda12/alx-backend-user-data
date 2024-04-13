@@ -4,22 +4,19 @@ Module for filtering log messages
 """
 
 import re
+from typing import List, Tuple
 
 
-def filter_datum(fields, redaction, message, separator):
+def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
     """
-    Obfuscate specific fields in a log message.
+    Returns the log message with the specified fields obfuscated.
 
-    Parameters:
-    fields (list): A list of strings representing all fields to obfuscate.
-    redaction (str): A string representing by what the field
-    will be obfuscated.
-    message (str): A string representing the log line.
-    separator (str): A string representing by which character is
-    separating all fields in the log line.
-
-    Returns:
-    str: The log message with obfuscated fields.
+    :param fields: List of field names to obfuscate
+    :param redaction: String to replace the field values with
+    :param message: Log message as a string
+    :param separator: Character separating fields in the log message
+    :return: Log message with obfuscated fields
     """
-    regex = re.compile(r'({})=(.*?)(?={})'.format('|'.join(fields), separator))
-    return regex.sub(r'\2={}{}'.format(redaction, separator), message)
+    for field in fields:
+        message = re.sub(fr'{field}=(.*?);', f'{field}={redaction};', message)
+    return message
