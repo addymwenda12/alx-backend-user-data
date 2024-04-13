@@ -5,6 +5,8 @@ Module for filtering log messages
 
 import re
 import logging
+import os
+import mysql.connector
 from typing import List, Tuple
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
@@ -89,3 +91,31 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Returns a connector to the database.
+
+    The database credentials are obtained from the environment variables:
+    - PERSONAL_DATA_DB_USERNAME (default: "root")
+    - PERSONAL_DATA_DB_PASSWORD (default: "")
+    - PERSONAL_DATA_DB_HOST (default: "localhost")
+    - PERSONAL_DATA_DB_NAME
+
+    Returns:
+        mysql.connector.connection.MySQLConnection: The database connector.
+    """
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    db = mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=db_name
+    )
+
+    return db
