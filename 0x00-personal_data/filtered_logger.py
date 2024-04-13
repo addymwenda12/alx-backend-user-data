@@ -7,6 +7,7 @@ import re
 import logging
 import os
 import mysql.connector
+import bcrypt
 from typing import List, Tuple
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
@@ -119,6 +120,23 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     )
 
     return db
+
+
+def hash_password(password: str) -> bytes:
+    """
+    Hashes a password with a randomly-generated salt and
+    returns the hashed password.
+
+    Args:
+        password (str): The password to hash.
+
+    Returns:
+        bytes: The hashed password.
+    """
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode(), salt)
+
+    return hashed_password
 
 
 def main():
