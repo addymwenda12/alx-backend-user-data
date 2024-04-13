@@ -119,3 +119,27 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     )
 
     return db
+
+
+def main():
+    """
+    Connects to the database, retrieves all rows in the users table,
+    and displays each row in a filtered format.
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+
+    for row in cursor:
+        formatted_row = "; ".join(f"{field}={value}" if field not in PII_FIELDS
+                                  else f"{field}=***" for field,
+                                  value in zip(cursor.column_names, row))
+        logger = get_logger()
+        logger.info(formatted_row)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
