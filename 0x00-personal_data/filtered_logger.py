@@ -7,6 +7,7 @@ import re
 import logging
 import os
 import mysql.connector
+
 from typing import List, Tuple
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
