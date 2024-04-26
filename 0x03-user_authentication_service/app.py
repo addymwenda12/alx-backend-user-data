@@ -87,7 +87,8 @@ def profile() -> str:
     Return:
         - JSON payload containing the user's email
         if the user is found.
-        - 403 HTTP status if the session ID is invalid or the user does not exist.
+        - 403 HTTP status if the session ID is invalid
+        or the user does not exist.
     """
     session_id = request.cookies.get('session_id')
 
