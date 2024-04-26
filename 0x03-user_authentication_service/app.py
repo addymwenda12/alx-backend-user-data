@@ -24,8 +24,10 @@ def users() -> str:
     """
     POST /users
     Return:
-        - JSON payload containing a success message if the user is registered successfully.
-        - JSON payload containing an error message if the user is already registered.
+        - JSON payload containing a success message
+        if the user is registered successfully.
+        - JSON payload containing an error message
+        if the user is already registered.
     """
     email = request.form['email']
     password = request.form['password']
