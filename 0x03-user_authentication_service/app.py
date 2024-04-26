@@ -4,7 +4,7 @@
 
 import bcrypt
 
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -61,6 +61,23 @@ def login() -> str:
         return response
 
     abort(401)
+
+
+def logout() -> str:
+    """
+    DELETE /sessions
+    Return:
+        - Redirect to GET / if the user is logged out successfully.
+        - 403 HTTP status if the user does not exist.
+    """
+    session_id = request.cookies.get('session_id')
+
+    user = AUTH.get_user_from_session_id(session_id)
+    if user is None:
+        abort(403)
+
+    AUTH.destroy_session(user.id)
+    return redirect('/')
 
 
 if __name__ == "__main__":
