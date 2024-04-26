@@ -67,10 +67,11 @@ class Auth:
             password (str): The password of the user.
 
         Returns:
-            bool: True if the password matches with the hashed password stored for the user, False otherwise.
+            bool: True if the password matches with the hashed password
+            stored for the user, False otherwise.
         """
-        user = self._db.find_user_by(email=email)  # Assuming _db is a database instance with a method find_user_by
+        user = self._db.find_user_by(email=email)
         if user:
-            hashed_password = user.password  # Assuming the user object has a password attribute
+            hashed_password = user.password
             return bcrypt.checkpw(password.encode(), hashed_password.encode())
         return False
