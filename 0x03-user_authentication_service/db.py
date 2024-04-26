@@ -66,7 +66,7 @@ class DB:
         Raises:
             NoResultFound: If no user was found.
         """
-        user = self._session.query(User).filter_by(**kwargs).first()
+        user = self._session.query(User).filter_by(**kwargs).one()
         if user is None:
             raise NoResultFound()
         return user
