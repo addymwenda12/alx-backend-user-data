@@ -2,6 +2,8 @@
 """A simple Flask app with user authentication features.
 """
 
+import bcrypt
+
 from flask import Flask, jsonify, request
 from auth import Auth
 
@@ -37,6 +39,26 @@ def users() -> str:
         return jsonify({"email": email, "message": "user created"}), 200
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
+
+
+class Auth:
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validate login
+
+        Args:
+            email (str): The email of the user.
+            password (str): The password of the user.
+
+        Returns:
+            bool: True if the password matches with the hashed password
+            stored for the user, False otherwise.
+        """
+        user = self._db.find_user_by(email=email)
+        if user:
+            hashed_password = user.password
+            return bcrypt.checkpw(password.encode(), hashed_password.encode())
+        return False
 
 
 if __name__ == "__main__":
