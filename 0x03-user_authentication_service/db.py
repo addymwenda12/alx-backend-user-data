@@ -6,8 +6,12 @@ The DB class is responsible for creating the database engine, managing the
 database session, and providing methods to interact with the database.
 Currently, it supports adding a new user to the database.
 """
+import logging
+from typing import Dict
+
 
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -53,7 +57,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs) -> User:
+    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """
         Find a user by a given keyword argument.
 
@@ -66,7 +70,11 @@ class DB:
         Raises:
             NoResultFound: If no user was found.
         """
-        user = self._session.query(User).filter_by(**kwargs).one()
-        if user is None:
+        session = self._session
+        try:
+            user = session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
             raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
         return user
